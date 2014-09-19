@@ -1,9 +1,11 @@
 package loez.nllr.algorithm;
 
-import loez.nllr.datastructure.ArrayList;
+import java.util.ArrayList;
 import loez.nllr.domain.Corpus;
 import loez.nllr.domain.Document;
+
 import static org.junit.Assert.*;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,14 +15,14 @@ import org.junit.Test;
  * @author loezi
  */
 public class NllrTest{
-    
+
     private Document docA;
     private Document docB;
     private Document docC;
-    private Document docD;   
+    private Document docD;
     private Corpus reference;
     private Corpus candidateA;
-    private Corpus candidateB;    
+    private Corpus candidateB;
     private Document query;
     private Nllr nllr;
 
@@ -30,29 +32,29 @@ public class NllrTest{
         docB = new Document(null, "auto hämminki kiva hässäkkä");
         docC = new Document(null, "testaus olla aina tosi kiva auto");
         docD = new Document(null, "mutta token keksiä joskus vaikea");
-        
+
         ArrayList<Document> refDocs = new ArrayList<>();
-        refDocs.add(docA); 
-        refDocs.add(docB); 
-        refDocs.add(docC); 
+        refDocs.add(docA);
+        refDocs.add(docB);
+        refDocs.add(docC);
         refDocs.add(docD);
         reference = new Corpus(refDocs);
-        
+
         ArrayList<Document> candADocs = new ArrayList<>();
         candADocs.add(docA);
         candADocs.add(docB);
         candidateA = new Corpus(candADocs);
-        
+
         ArrayList<Document> candBDocs = new ArrayList<>();
         candBDocs.add(docC);
         candBDocs.add(docD);
         candidateB = new Corpus(candBDocs);
-        
+
         query = new Document(null, "token token hässäkkä auto joskus");
-        
+
         nllr = new Nllr(reference);
     }
-    
+
     @Test
     public void testCalculateTokenProbabilityForDocument(){
         assertTrue("Probability for tokens not present in the document should be 0.0000000000000001",
@@ -62,7 +64,7 @@ public class NllrTest{
         assertTrue("Probability for token that is present 1 times in a document with 5 tokens should be 0.2",
                 equal(nllr.calculateTokenProbability("asia", docA), 0.2));
     }
-    
+
     @Test
     public void testCalculateTokenProbabilityForCorpus(){
         assertTrue("Probability for tokens not present in the corpus should be 0.0000000000000001",
@@ -72,9 +74,9 @@ public class NllrTest{
         assertTrue("Probability for token that is present 1 times in a corpus with 9 tokens should be 1/9",
                 equal(nllr.calculateTokenProbability("asia", candidateA), 1.0/9));
     }
-    
+
     @Test
-    public void testCalculateNllr(){       
+    public void testCalculateNllr(){
         /*
         NLLR #1
         sub-results for each token in query:
@@ -88,10 +90,10 @@ public class NllrTest{
         */
         double expected = -7.611551362445845;
         double actual = nllr.calculateNllr(query, candidateA);
-                
+
         assertTrue("NLLR calculation #1 gave incorrect result, see test file for more information. Expected "+ expected +" got "+ actual,
                 equal(expected, actual));
-        
+
         /*
         NLLR #2
         sub-results for each token in query:
@@ -105,47 +107,47 @@ public class NllrTest{
         */
         expected = -2.4234619471003476;
         actual = nllr.calculateNllr(query, candidateB);
-                
+
         assertTrue("NLLR calculation #2 gave incorrect result, see test file for more information. Expected "+ expected +" got "+ actual,
                 equal(expected, actual));
     }
-    
+
     @Test
     public void calculateTest(){
         double expected = -2.4234619471003476;
-        
+
         Object[] args = {candidateB, query};
         double actual = nllr.calculate(args);
-                
+
         assertTrue("calculate() result didn't match NLLR calculation #2 result. Expected "+ expected +" got "+ actual,
                 equal(expected, actual));
-    } 
-    
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void calculateTooFewArgs(){
         Object[] args = {query};
         nllr.calculate(args);
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
     public void calculateTooManyArgs(){
         Object[] args = {query, candidateB, candidateA};
         nllr.calculate(args);
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
     public void calculateWrongArgTypes1(){
         Object[] args = {null, candidateB};
         nllr.calculate(args);
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
     public void calculateWrongArgTypes2(){
         Object[] args = {query, null};
         nllr.calculate(args);
     }
 
-    
+
     public boolean equal(double a, double b){
         double epsilon = 0.00000001;
         return Math.abs(a - b) < epsilon;

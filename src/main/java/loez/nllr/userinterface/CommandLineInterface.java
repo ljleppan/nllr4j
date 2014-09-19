@@ -3,6 +3,7 @@ package loez.nllr.userinterface;
 import java.io.FileNotFoundException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Random;
@@ -10,7 +11,6 @@ import java.util.Scanner;
 import loez.nllr.algorithm.Argmax;
 import loez.nllr.algorithm.Argmax.Result;
 import loez.nllr.algorithm.Nllr;
-import loez.nllr.datastructure.ArrayList;
 import loez.nllr.domain.Corpus;
 import loez.nllr.domain.Document;
 import loez.nllr.domain.TimeSpan;
@@ -35,12 +35,12 @@ public class CommandLineInterface implements UserInterface{
     private Corpus testCorpus;
     private ArrayList<Corpus> timePartitions;
     private Nllr nllr;
-    
+
     private int correct = 0;
     private int wrong = 0;
-    
+
     private static final String DEFAULT_DATE_STRING = "d-MMM-yyyy";
-    
+
     /**
      * Sets up possible preprocessors and their names.
      * A preprocessor and its name should have same index in both lists.
@@ -52,13 +52,13 @@ public class CommandLineInterface implements UserInterface{
         this.preProcessors = preProcessors;
         this.preProcessorNames = preProcessorNames;
     }
-    
+
     /**
      * Starts up the user interface
      */
     @Override
     public void run() {
-        getDateFormat(); 
+        getDateFormat();
         getPreprocessor();
         getLanguage();
         getCorpusReader();
@@ -66,12 +66,12 @@ public class CommandLineInterface implements UserInterface{
         getTimePartitionSize();
         processTimePartitions();
         setupNllr();
-        
+
         printCommands();
         while(true){
             printCommandPrompt();
             String input = in.nextLine();
-            
+
             if (input.equals("quit")){
                 return;
             }
@@ -97,18 +97,18 @@ public class CommandLineInterface implements UserInterface{
         }
         dateFormat = new SimpleDateFormat(dateFormatString, Locale.US);
     }
-    
-    private void getPreprocessor(){       
+
+    private void getPreprocessor(){
         printPreProcessorPrompt();
         printCommandPrompt();
         String preprocessorString = in.nextLine();
-        
+
         while (!preProcessorNames.contains(preprocessorString.toLowerCase().trim())){
             System.out.println("\tNo such preprocessor. ");
             printPreProcessorPrompt();
             preprocessorString = in.nextLine();
         }
-        
+
         int index = preProcessorNames.indexOf(preprocessorString);
         preProcessor = preProcessors.get(index);
     }
@@ -120,7 +120,7 @@ public class CommandLineInterface implements UserInterface{
         }
         System.out.println("]: ");
     }
-    
+
     private void getLanguage() {
         if (!(preProcessor instanceof SimplePreprocessor)){
             String language = queryFor("Set language:");
@@ -132,11 +132,11 @@ public class CommandLineInterface implements UserInterface{
             System.out.println("\tLanguage set to "+preProcessor.getLanguage());
         }
     }
-    
+
     private void getCorpusReader() {
         corpusReader = new CorpusReader();
     }
-    
+
     private void getReferenceCorpus(){
         String referenceCorpusPath = queryFor("Set path to reference corpus:");
         while (!processReferenceCorpus(referenceCorpusPath)) {
@@ -155,9 +155,9 @@ public class CommandLineInterface implements UserInterface{
         System.out.println("\tDone processing reference corpus. \n");
         return true;
     }
-    
+
     private void getTimePartitionSize(){
-        while (true){ 
+        while (true){
             printTimePartitionSizePrompt();
             printCommandPrompt();
             String input = in.nextLine().trim().toLowerCase();
@@ -181,23 +181,23 @@ public class CommandLineInterface implements UserInterface{
                 timeSpan = new TimeSpan(referenceCorpus.getStartDate(), TimeSpan.Length.YEARLY);
                 break;
             }
-            
+
             System.out.println("\tInvalid time partition size.");
-        }        
+        }
     }
-    
+
     private void printTimePartitionSizePrompt() {
         System.out.println("Set time partition size [daily, weekly, biweekly, monthly, yearly]: ");
     }
 
     private void processTimePartitions(){
         timePartitions = new ArrayList<>();
-        
-        Calendar startDate = (Calendar) referenceCorpus.getStartDate().clone(); 
+
+        Calendar startDate = (Calendar) referenceCorpus.getStartDate().clone();
         Calendar endDate = (Calendar) referenceCorpus.getEndDate().clone();
-        
+
         System.out.println("Getting time partitions for the reference corpus spanning "+ dateFormat.format(startDate.getTime()) + " to " + dateFormat.format(endDate.getTime())+" :");
-                
+
         while (!timeSpan.getStart().after(endDate)){
             processSingleTimepartition(timeSpan.getStart(), timeSpan.getEnd());
             timeSpan.advance();
@@ -210,11 +210,11 @@ public class CommandLineInterface implements UserInterface{
         date.clear(Calendar.MINUTE);
         date.clear(Calendar.SECOND);
     }
-    
-    private void processSingleTimepartition(Calendar partitionStartDate, Calendar partitionEndDate){     
-        System.out.print("\t"+dateFormat.format(partitionStartDate.getTime()) + " - " +dateFormat.format(partitionEndDate.getTime()));        
+
+    private void processSingleTimepartition(Calendar partitionStartDate, Calendar partitionEndDate){
+        System.out.print("\t"+dateFormat.format(partitionStartDate.getTime()) + " - " +dateFormat.format(partitionEndDate.getTime()));
         Corpus timePartition = referenceCorpus.getTimePartition(partitionStartDate, partitionEndDate);
-        
+
         if (!timePartition.getDocuments().isEmpty()){
                 timePartitions.add(timePartition);
                 System.out.println(" ("+timePartition.getDocuments().size()+" documents)");
@@ -222,11 +222,11 @@ public class CommandLineInterface implements UserInterface{
             System.out.println(" Partition was empty, skipping.");
         }
     }
-    
+
     private void setupNllr(){
         nllr = new Nllr(referenceCorpus);
     }
-    
+
     private void printCommands(){
         System.out.println("Known commands:");
         System.out.println("\trandom -- Processes a random document from the Reference corpus.");
@@ -235,38 +235,38 @@ public class CommandLineInterface implements UserInterface{
         System.out.println("\thelp   -- Shows this help.");
         System.out.println("\tquit   -- Quits the application.");
     }
-    
+
     private String queryFor(String query){
         System.out.println(query);
         printCommandPrompt();
         String command = in.nextLine();
         return command;
     }
-    
+
     private void printCommandPrompt(){
         System.out.print(" > ");
     }
-    
+
     private void processRandom(){
         int referenceCorpusSize = referenceCorpus.getDocuments().size();
         int randomDocumentId = new Random().nextInt(referenceCorpusSize);
         Document document = referenceCorpus.getDocuments().get(randomDocumentId);
-        
+
         System.out.println("Random document #"+randomDocumentId);
         processDocument(document);
     }
-    
+
     private void processSingle(){
         String raw = queryFor("Input text body:");
-        
+
         String body = preProcessor.process(raw);
         System.out.println("Processed text:");
         System.out.println("\t"+body);
-        
+
         Document document = new Document(body);
         processDocument(document);
     }
-    
+
     private void processMultiple(){
         correct = 0;
         wrong = 0;
@@ -278,13 +278,13 @@ public class CommandLineInterface implements UserInterface{
         correct = 0;
         wrong = 0;
     }
-    
+
     private void getTestCorpus(){
         String testCorpusPath = queryFor("Set path to test corpus:");
         while (!processTestCorpus(testCorpusPath)){
             System.out.println("File not found.");
             testCorpusPath = queryFor("Set path to test corpus:");
-        }        
+        }
     }
 
     private boolean processTestCorpus(String testCorpusPath) {
@@ -297,33 +297,33 @@ public class CommandLineInterface implements UserInterface{
         System.out.println("\tDone processing test corpus. \n");
         return true;
     }
-    
-    private void processDocument(Document document){        
+
+    private void processDocument(Document document){
         Object[] argMaxArgs = {document};
         Result<Corpus> result = new Argmax<Corpus>().single(nllr, timePartitions, argMaxArgs);
-        
+
         Corpus resultCorpus = result.getArgument();
         double resultNllr = result.getValue();
 
         printResult(document, resultCorpus, resultNllr);
     }
-        
+
     private void printResult(Document document, Corpus resultCorpus, double resultNllr){
         String docDate = "UNKNOWN";
         if (document.getDate() != null){
             docDate = dateFormat.format(document.getDate().getTime());
         }
-        
+
         String corpStartDate = "UNKNOWN";
         if (resultCorpus != null && resultCorpus.getStartDate() != null){
             corpStartDate = dateFormat.format(resultCorpus.getStartDate().getTime());
         }
-        
+
         String corpEndDate = "UNKNOWN";
         if (resultCorpus != null && resultCorpus.getEndDate() != null){
             corpEndDate = dateFormat.format(resultCorpus.getEndDate().getTime());
         }
-        
+
         if (document.getDate() != null && resultCorpus.getEndDate() != null && resultCorpus.getStartDate() != null){
             if (!document.getDate().before(resultCorpus.getStartDate()) && !document.getDate().after(resultCorpus.getEndDate())){
                 correct++;
@@ -331,7 +331,7 @@ public class CommandLineInterface implements UserInterface{
                 wrong++;
             }
         }
-        
+
         StringBuilder out = new StringBuilder();
         out.append("Actual date: ");
         out.append(docDate);
@@ -342,7 +342,7 @@ public class CommandLineInterface implements UserInterface{
         out.append(" : ");
         out.append(resultNllr);
         out.append("\n");
-        
+
         System.out.println(out.toString());
     }
 }

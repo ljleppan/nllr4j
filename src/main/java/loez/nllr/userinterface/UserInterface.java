@@ -1,6 +1,6 @@
 package loez.nllr.userinterface;
 
-import loez.nllr.datastructure.ArrayList;
+import java.util.ArrayList;
 import loez.nllr.preprocessor.PreProcessor;
 
 /**

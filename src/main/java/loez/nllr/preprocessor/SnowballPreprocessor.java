@@ -1,7 +1,7 @@
 package loez.nllr.preprocessor;
 
+import java.util.HashSet;
 import loez.nllr.preprocessor.exception.StemmerCreationException;
-import loez.nllr.datastructure.HashSet;
 import loez.nllr.preprocessor.util.Numeral;
 import loez.nllr.preprocessor.util.Punctuation;
 import org.tartarus.snowball.SnowballProgram;
@@ -12,12 +12,12 @@ import org.tartarus.snowball.SnowballProgram;
  */
 public class SnowballPreprocessor implements PreProcessor{
     private final static String DEFAULT_LANGUAGE = "English";
-    private final Punctuation punctuation = new Punctuation();   
+    private final Punctuation punctuation = new Punctuation();
     private final Numeral numeral = new Numeral();
     private SnowballProgram stemmer;
     private HashSet<String> languages;
     private String language;
-    
+
     /**
      * Creates a new SnowballPreprocessor initialized with a certain language
      * @param language  The language
@@ -27,10 +27,10 @@ public class SnowballPreprocessor implements PreProcessor{
         languages = new HashSet<>();
         languages.add("English");
         languages.add("Finnish");
-        
+
         tryToSetLanguage(language);
     }
-    
+
     /**
      * Creates a new SnowballPreprocessor with the default language.
      * @throws StemmerCreationException
@@ -38,7 +38,7 @@ public class SnowballPreprocessor implements PreProcessor{
     public SnowballPreprocessor() throws StemmerCreationException{
         this("default");
     }
-    
+
     /**
      * Sets the language of the Stemmer
      * @param language  The new language
@@ -48,7 +48,7 @@ public class SnowballPreprocessor implements PreProcessor{
     public void setLanguage(String language) throws StemmerCreationException{
         tryToSetLanguage(language);
     }
-    
+
     /**
      * @return The language this preprocessor is set to use.
      */
@@ -56,7 +56,7 @@ public class SnowballPreprocessor implements PreProcessor{
     public String getLanguage(){
         return this.language;
     }
-    
+
     @Override
     public String process(String input) {
         String output = input;
@@ -66,7 +66,7 @@ public class SnowballPreprocessor implements PreProcessor{
         output = output.trim().toUpperCase();
         return output;
     }
-    
+
     private void tryToSetLanguage(String language) throws StemmerCreationException{
         if (languages.contains(language)){
             buildSnowballProgram(language);
@@ -77,7 +77,7 @@ public class SnowballPreprocessor implements PreProcessor{
             this.language = DEFAULT_LANGUAGE;
         }
     }
-    
+
     private void buildSnowballProgram(String language) throws StemmerCreationException{
         try {
             Class stemClass = Class.forName("org.tartarus.snowball.ext." + language + "Stemmer");
@@ -86,10 +86,10 @@ public class SnowballPreprocessor implements PreProcessor{
             throw new StemmerCreationException(e.getMessage());
         }
     }
-    
+
     private String stemMultiple(String sentence){
         String[] words = sentence.split(" ");
-        
+
         StringBuilder output = new StringBuilder();
         for (String word : words){
             String token = stem(word);
@@ -98,10 +98,10 @@ public class SnowballPreprocessor implements PreProcessor{
         }
         return output.toString();
     }
-    
+
     private String stem(String word){
         stemmer.setCurrent(word);
         stemmer.stem();
-        return stemmer.getCurrent(); 
+        return stemmer.getCurrent();
     }
 }

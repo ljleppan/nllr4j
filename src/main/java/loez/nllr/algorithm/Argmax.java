@@ -1,6 +1,7 @@
 package loez.nllr.algorithm;
 
-import loez.nllr.datastructure.ArrayList;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * An implementation of the argmax algorithm.
@@ -8,7 +9,7 @@ import loez.nllr.datastructure.ArrayList;
  * @param <T>
  */
 public class Argmax<T> {
-    
+
     /**
      * An argument - result pair
      * @param <T>
@@ -16,7 +17,7 @@ public class Argmax<T> {
     public static class Result<T>{
         private final T argument;
         private final double value;
-        
+
         /**
          * Creates a new result
          * @param argument  The argument that was used
@@ -26,14 +27,14 @@ public class Argmax<T> {
             this.argument = argument;
             this.value = value;
         }
-        
+
         /**
          * @return the argument that was used
          */
         public T getArgument(){
             return argument;
         }
-        
+
         /**
          * @return the value that was returned from the algorithm
          */
@@ -41,7 +42,7 @@ public class Argmax<T> {
             return value;
         }
     }
-    
+
     /**
      * Calculates argmax for given algorithm and arguments.
      * The method call made will be algorithm(arg, constants) where arg is from args and constants is the array of constants.
@@ -53,11 +54,11 @@ public class Argmax<T> {
     public Result<T> single(Algorithm algorithm, ArrayList<T> args, Object[] constants){
         Object[] argList = new Object[constants.length + 1];
         System.arraycopy(constants, 0, argList, 1, constants.length);
-        
+
         argList[0] = args.get(0);
         double maxVal = algorithm.calculate(argList);
         T maxArg = args.get(0);
-        
+
         for (int i = 1; i < args.size(); i++) {
             argList[0] = args.get(i);
             double result = algorithm.calculate(argList);
@@ -65,10 +66,10 @@ public class Argmax<T> {
                 maxVal = result;
                 maxArg = args.get(i);
             }
-        }        
+        }
         return new Result(maxArg, maxVal);
     }
-    
+
     /**
      * Calculates argmax for given algorithm and arguments, returning AMOUNT highest arguments
      * @param algorithm The algorithm
@@ -77,9 +78,9 @@ public class Argmax<T> {
      * @param constants The constants of the algorithm call
      * @return          A list of the AMOUNT best results
      */
-    public ArrayList<Result<T>> multiple(Algorithm algorithm, int amount, ArrayList<T> args, Object[] constants){
+    public ArrayList<Result<T>> multiple(Algorithm algorithm, int amount, Collection<T> args, Object[] constants){
         ArrayList<Result<T>> results = new ArrayList<>();
-        
+
         Object[] argList = new Object[constants.length + 1];
         System.arraycopy(constants, 0, argList, 1, constants.length);
         for (T arg : args){
@@ -94,11 +95,11 @@ public class Argmax<T> {
                 sort(results);
             }
         }
-        
+
         return results;
     }
-    
-    
+
+
     private void sort(ArrayList<Result<T>> results){
         for (int i = 1; i < results.size(); i++) {
             Result x = results.get(i);

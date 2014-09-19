@@ -4,18 +4,22 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import loez.nllr.datastructure.ArrayList;
+import java.util.ArrayList;
 import loez.nllr.preprocessor.PreProcessor;
 import loez.nllr.preprocessor.SimplePreprocessor;
 import loez.nllr.preprocessor.SnowballPreprocessor;
 import loez.nllr.preprocessor.exception.StemmerCreationException;
 import org.junit.Before;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
+
 import org.junit.Rule;
 import org.junit.contrib.java.lang.system.StandardOutputStreamLog;
 import org.junit.contrib.java.lang.system.TextFromStandardInputStream;
+
 import static org.junit.contrib.java.lang.system.TextFromStandardInputStream.emptyStandardInputStream;
+
 import org.junit.rules.TemporaryFolder;
 
 /**
@@ -25,19 +29,19 @@ import org.junit.rules.TemporaryFolder;
 public class CommandLineInterfaceTest {
     private UserInterface ui;
     private File testFile;
-   
+
     @Rule
     public final StandardOutputStreamLog log = new StandardOutputStreamLog();
-    
+
     @Rule
     public final TextFromStandardInputStream systemInMock = emptyStandardInputStream();
-    
+
     @Rule
     public TemporaryFolder testFolder = new TemporaryFolder();
-    
+
     @Before
     public void setUp() throws IOException {
-        
+
         testFile = testFolder.newFile("test.csv");
         BufferedWriter out = new BufferedWriter(new FileWriter(testFile));
         out.write("TEST; 8-APR-1987 00:38:26.78;    BELGRADE, April 8 - ;YUGOSLAV WORKERS MAY BE ANGERED BY LOST SUBSIDIES;  Yugoslav government plans to stop subsidising loss-making firms will anger hundreds of thousands of workers, Western diplomats said.     The law, proposed by Prime Minister Branko Mikulic, goes into effect on July 1 and aims to end a long-standing practice of supporting unprofitable companies. Under the law, wage cuts will be imposed on losing enterprises, while those failing to recover within a six-month grace period will face liquidation.     The diplomats said Mikulic's attempt to create a market economy is inevitable, but has still come as a shock to those accustomed to government subsidies.     \"It was a bitter pill which had to be swallowed, but if an overdose is taken too abruptly, it may have adverse effects on the system,\" a Western diplomat said.     He said if the law was applied too strictly it would probably provoke a new wave of strikes and unrest.     Yugoslavia was swept by strikes last month following the introduction of a wage-freeze law, later amended to allow more flexibility and some exemptions in what some political analysts saw as a retreat by Mikulic.     But with inflation moving towards 100 pct, trade union leaders have asked how much more deprivation workers can take.     The union leaders said workers thoughout the country are already receiving salaries below limits set under existing law, while others have received no wages at all this year because their employers are unable to pay them.     Workers also complain much of their income is taken in local, state and federal taxes.     Many others are losing their motivation to work and confidence in government as they feel their decision-making powers are being eroded, trade union officials said.     Meanwhile, the official Tanjug news agency reported a paper and cellulose factory at Ivangrad in the Montenegro republic closed yesterday and 2,000 of its workers were given \"temporary leave.\"     Tanjug said the plant had been running at a loss for the 24 years it had been in operation, and its closure was the result of \"economic necessity\" rather than bankruptcy.  REUTER \n");
@@ -52,25 +56,25 @@ public class CommandLineInterfaceTest {
         out.write("TEST; 13-APR-1987 03:11:28.04;    ABU DHABI, April 13 - ;UAE CENTRAL BANK CD YIELDS RISE;  Yields on certificates of deposit (CD) offered by the United Arab Emirates Central Bank were higher than last Monday's offering, the bank said.     The one-month CD rose 1/4 point to 6-3/8 pct, while the two, three and six-month maturities rose 5/16 point each to 6-7/16, 6-1/2 and 6-5/8 pct respectively.  REUTER \n");
         out.write("TEST; 13-APR-1987 03:14:22.80;    HONG KONG, April 13 - ;CHINESE HOTEL RAISES 21 MLN DLR LOAN;  A tourist hotel in Suzhou, Jiangsu province, is raising a 21 mln U.S. Dlr loan to cover its construction cost, lead manager <DnC Ltd> said.     The loan for the Suzhou Aster Hotel will mature in 10 years and is guaranteed by the provincial investment arm <Jiangsu International Trust and Investment Corp>. The terms were not revealed. The loan, to be signed by the end of the month, will be provided by a number of banks on a club basis.     The hotel is being developed on a contractual joint venture basis between an unnamed Hong Kong Chinese investor and Suzhou municipal entities.  REUTER \n");
         out.close();
-        
+
         ArrayList<String> ppNames = new ArrayList<>();
         ArrayList<PreProcessor> pps = new ArrayList<>();
-        
+
         ppNames.add("");
         pps.add(new SimplePreprocessor());
-        
+
         ppNames.add("simple");
         pps.add(new SimplePreprocessor());
-        
+
         try {
             pps.add(new SnowballPreprocessor());
             ppNames.add("snowball");
         } catch (StemmerCreationException e) { }
-        
+
         ui = new CommandLineInterface();
         ui.setupPreprocessors(pps, ppNames);
     }
-    
+
     @Test
     public void giganticTestThatAlsoTestsCorpusReaderSomewhat(){
         systemInMock.provideText(""
@@ -84,9 +88,9 @@ public class CommandLineInterfaceTest {
                 + "help\n"
                 + "random\n"
                 + "quit\n");
-        
+
         ui.run();
-        
+
         String out = log.getLog();
         assertTrue(out.contains("Set date format:"));
         assertTrue(out.contains("Set preprocessor"));
@@ -112,5 +116,5 @@ public class CommandLineInterfaceTest {
         assertTrue(out.contains("Random document"));
         assertTrue(out.contains("Actual date"));
     }
-    
+
 }

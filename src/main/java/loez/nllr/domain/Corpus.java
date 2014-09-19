@@ -1,10 +1,9 @@
 package loez.nllr.domain;
 
-import loez.nllr.datastructure.HashMap;
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
-import loez.nllr.datastructure.ArrayList;
-import loez.nllr.datastructure.HashSet;
+import java.util.HashMap;
+import java.util.HashSet;
 
 
 /**
@@ -18,7 +17,7 @@ public class Corpus implements BagOfWords{
     private int totalTokens;
     private HashMap<String, Integer> tokenFrequensies;
     private HashMap<String, Integer> numOfDocumentsContainingToken;
-    
+
     /**
      * Creates a new corpus from a list of documents.
      * @param documents The documents the corpus is comprised of.
@@ -30,14 +29,14 @@ public class Corpus implements BagOfWords{
 
         refreshStats();
     }
-    
+
     /**
      * Create an empty corpus.
      */
     public Corpus(){
         this(new ArrayList<Document>());
     }
-    
+
     /**
      * Add a document to the corpus.
      * @param document  The document to be added.
@@ -47,7 +46,7 @@ public class Corpus implements BagOfWords{
             documents.add(document);
         }
     }
-    
+
     /**
      * Gets the document with the specified index.
      * @param index Index of the document.
@@ -60,7 +59,7 @@ public class Corpus implements BagOfWords{
             return null;
         }
     }
-    
+
     /**
      * Removes a document from the corpus.
      * @param index The index of the document.
@@ -77,7 +76,7 @@ public class Corpus implements BagOfWords{
     public int getTotalTokens() {
         return this.totalTokens;
     }
-    
+
     /**
      * Get the frequency of a token within the corpus.
      * @param token The token.
@@ -90,7 +89,7 @@ public class Corpus implements BagOfWords{
         }
         return 0;
     }
-    
+
     /**
      * Checks if a token is present in the corpus.
      * @param token Token to look for.
@@ -100,7 +99,7 @@ public class Corpus implements BagOfWords{
     public boolean containsToken(String token){
         return tokenFrequensies.containsKey(token);
     }
-    
+
     /**
      * Creates a sub-corpus of all the documents that were created between start and end dates.
      * @param start Start date, inclusive
@@ -125,7 +124,7 @@ public class Corpus implements BagOfWords{
         totalTokens = 0;
         tokenFrequensies = new HashMap<>();
         numOfDocumentsContainingToken = new HashMap<>();
-        
+
         if (!documents.isEmpty()){
             for (Document doc : documents){
                 refreshDates(doc);
@@ -133,9 +132,9 @@ public class Corpus implements BagOfWords{
                 refreshNumberOfDocumentsContainingToken(doc);
                 totalTokens += doc.getTotalTokens();
             }
-        }        
+        }
     }
-    
+
     /**
      * Returns the number of documents in this corpus that contain the queried token.
      * @param token Token
@@ -148,7 +147,7 @@ public class Corpus implements BagOfWords{
             return 0;
         }
     }
-    
+
     private void refreshNumberOfDocumentsContainingToken(Document doc) {
         for(String token : doc.getUniqueTokens()){
             int amountNow = 0;
@@ -160,9 +159,9 @@ public class Corpus implements BagOfWords{
     }
 
     private void refreshFrequencies(Document doc) {
-        for (String token : doc.getUniqueTokens()){    
+        for (String token : doc.getUniqueTokens()){
             int docTokenAmount = doc.getFrequency(token);
-            
+
             int amountNow = 0;
             if (tokenFrequensies.containsKey(token)) {
                 amountNow = tokenFrequensies.get(token);
@@ -179,7 +178,7 @@ public class Corpus implements BagOfWords{
             } else if (getStartDate().after(doc.getDate())){
                 startDate.setTime(doc.getDate().getTime());
             }
-            
+
             if (this.endDate == null){
                 this.endDate = (Calendar) documents.get(0).getDate().clone();
             } else if (getEndDate().before(doc.getDate())){
@@ -208,7 +207,7 @@ public class Corpus implements BagOfWords{
     public ArrayList<Document> getDocuments() {
         return documents;
     }
-    
+
     /**
      * @return A HashSet of unique tokens found in the corpus.
      */
