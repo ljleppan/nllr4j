@@ -1,8 +1,7 @@
-
 package loez.nllr.algorithm;
 
 /**
- * Interface for all algorithms
+ * Interface for all algorithms.
  * @author loezi
  */
 public interface Algorithm {
@@ -13,5 +12,5 @@ public interface Algorithm {
      * @param args  Arguments
      * @return      Algorithm result.
      */
-    public double calculate(Object[] args);
+    double calculate(Object[] args);
 }

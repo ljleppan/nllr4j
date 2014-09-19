@@ -3,15 +3,18 @@ package loez.nllr.domain;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Document is a single text.
  * @author ljleppan@cs
  */
-public class Document implements BagOfWords{
+public class Document implements BagOfWords {
+
     private String body;
     private Calendar date;
-    private HashMap<String, Integer> tokenAmounts;
+    private Map<String, Integer> tokenAmounts;
     private int numTokens;
 
     /**
@@ -19,11 +22,12 @@ public class Document implements BagOfWords{
      * @param date  Date of document's creation.
      * @param body  The text of the document.
      */
-    public Document(Calendar date, String body){
+    public Document(final Calendar date, final String body) {
+
         this.body = body;
         this.date = date;
 
-        if (this.date != null){
+        if (this.date != null) {
             this.date.clear(Calendar.HOUR);
             this.date.clear(Calendar.MINUTE);
             this.date.clear(Calendar.SECOND);
@@ -40,19 +44,21 @@ public class Document implements BagOfWords{
      * Creates a new document without a known date.
      * @param body  The text of the document.
      */
-    public Document(String body){
+    public Document(final String body) {
+
         this(null, body);
     }
 
     private void countTokenFrequencies() {
+
         numTokens = 0;
 
-        String[] tokens = body.split(" ");
-        for (String t : tokens){
+        final String[] tokens = body.split(" ");
+        for (String t : tokens) {
             numTokens++;
 
-            if (tokenAmounts.containsKey(t)){
-                int amountNow = tokenAmounts.get(t);
+            if (tokenAmounts.containsKey(t)) {
+                final int amountNow = tokenAmounts.get(t);
                 tokenAmounts.put(t, amountNow + 1);
             } else {
                 tokenAmounts.put(t, 1);
@@ -66,13 +72,13 @@ public class Document implements BagOfWords{
      * @return      The frequency of the token.
      */
     @Override
-    public int getFrequency(String token){
-        if (tokenAmounts.containsKey(token)){
+    public int getFrequency(final String token) {
+
+        if (tokenAmounts.containsKey(token)) {
             return tokenAmounts.get(token);
         } else {
             return 0;
         }
-
     }
 
     /**
@@ -80,7 +86,8 @@ public class Document implements BagOfWords{
      * @return  The total amount of token in the document body.
      */
     @Override
-    public int getTotalTokens(){
+    public int getTotalTokens() {
+
         return numTokens;
     }
 
@@ -89,9 +96,11 @@ public class Document implements BagOfWords{
      * @return  A HashSet of unique tokens in the documents. Order is not specified.
      */
     @Override
-    public HashSet<String> getUniqueTokens(){
-        HashSet<String> uniqueTokens = new HashSet<>();
+    public Set<String> getUniqueTokens() {
+
+        final Set<String> uniqueTokens = new HashSet<>();
         uniqueTokens.addAll(tokenAmounts.keySet());
+
         return uniqueTokens;
     }
 
@@ -101,7 +110,8 @@ public class Document implements BagOfWords{
      * @return      True if token is present, false if not
      */
     @Override
-    public boolean containsToken(String token){
+    public boolean containsToken(final String token) {
+
         return tokenAmounts.containsKey(token);
     }
 
@@ -109,7 +119,8 @@ public class Document implements BagOfWords{
      * Get the date of creation of the document.
      * @return The date of creation.
      */
-    public Calendar getDate(){
+    public Calendar getDate() {
+
         return date;
     }
 }

@@ -1,7 +1,7 @@
 package loez.nllr.preprocessor.util;
 
 /**
- * A preprocessor utility for handling numerals
+ * A preprocessor utility for handling numerals.
  * @author ljleppan
  */
 public class Numeral implements PreprocessorUtil {
@@ -13,7 +13,8 @@ public class Numeral implements PreprocessorUtil {
      * @return              String with numeral replaces with replacement string
      */
     @Override
-    public String replace(String input, String replacement){
+    public String replace(final String input, final String replacement) {
+
         return input.replaceAll("\\p{Digit}+", replacement);
     }
 
@@ -23,7 +24,8 @@ public class Numeral implements PreprocessorUtil {
      * @return      Input with all numerals removed
      */
     @Override
-    public String remove(String input){
+    public String remove(final String input) {
+
         return replace(input, "");
     }
 }

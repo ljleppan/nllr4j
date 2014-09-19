@@ -123,7 +123,7 @@
         <!-- Miscellaneous -->
 
         <module name='UncommentedMain'>
-            <property name='excludedClasses' value='App$' />
+            <property name='excludedClasses' value='Main$' />
         </module>
 
         <module name='UpperEll' />

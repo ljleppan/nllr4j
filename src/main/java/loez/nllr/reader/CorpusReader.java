@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.DateFormat;
+
 import loez.nllr.domain.Corpus;
 import loez.nllr.domain.Document;
 import loez.nllr.preprocessor.PreProcessor;
@@ -23,18 +24,25 @@ public class CorpusReader {
      * @return              A corpus parsed from the file
      * @throws java.io.FileNotFoundException
      */
-    public Corpus readCorpus(String path, DateFormat dateFormat, PreProcessor preprocessor) throws FileNotFoundException{
-        try(BufferedReader in = new BufferedReader(new FileReader(path))) {
+    public Corpus readCorpus(final String path, final DateFormat dateFormat, final PreProcessor preprocessor) throws FileNotFoundException {
+
+        try (BufferedReader in = new BufferedReader(new FileReader(path))) {
+
             String rawDocumentString;
-            Corpus corpus = new Corpus();
-            while ((rawDocumentString = in.readLine()) != null){
-                Document document = DocumentConverter.rawStringToDocument(rawDocumentString, dateFormat, preprocessor);
-                if (document != null){
+            final Corpus corpus = new Corpus();
+
+            while ((rawDocumentString = in.readLine()) != null) {
+
+                final Document document = DocumentConverter.rawStringToDocument(rawDocumentString, dateFormat, preprocessor);
+
+                if (document != null) {
                     corpus.add(document);
                 }
             }
             corpus.refreshStats();
+
             return corpus;
+
         } catch (IOException e) {
             throw new FileNotFoundException();
         }

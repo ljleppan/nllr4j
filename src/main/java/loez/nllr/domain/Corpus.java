@@ -4,26 +4,30 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
-
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Corpus is a collection of Documents.
  * @author ljleppan@cs
  */
-public class Corpus implements BagOfWords{
-    private ArrayList<Document> documents = new ArrayList<>();
+public class Corpus implements BagOfWords {
+
+    private List<Document> documents = new ArrayList<>();
     private Calendar startDate;
     private Calendar endDate;
     private int totalTokens;
-    private HashMap<String, Integer> tokenFrequensies;
-    private HashMap<String, Integer> numOfDocumentsContainingToken;
+    private Map<String, Integer> tokenFrequensies;
+    private Map<String, Integer> numOfDocumentsContainingToken;
 
     /**
      * Creates a new corpus from a list of documents.
      * @param documents The documents the corpus is comprised of.
      */
-    public Corpus(ArrayList<Document> documents){
-        if (documents != null){
+    public Corpus(final List<Document> documents) {
+
+        if (documents != null) {
             this.documents = documents;
         }
 
@@ -33,7 +37,8 @@ public class Corpus implements BagOfWords{
     /**
      * Create an empty corpus.
      */
-    public Corpus(){
+    public Corpus() {
+
         this(new ArrayList<Document>());
     }
 
@@ -41,8 +46,9 @@ public class Corpus implements BagOfWords{
      * Add a document to the corpus.
      * @param document  The document to be added.
      */
-    public void add(Document document){
-        if (document != null){
+    public void add(final Document document) {
+
+        if (document != null) {
             documents.add(document);
         }
     }
@@ -52,8 +58,9 @@ public class Corpus implements BagOfWords{
      * @param index Index of the document.
      * @return      The document with the specified index.
      */
-    public Document get(int index){
-        if (documents.size() > index){
+    public Document get(final int index) {
+
+        if (documents.size() > index) {
             return documents.get(index);
         } else {
             return null;
@@ -64,7 +71,8 @@ public class Corpus implements BagOfWords{
      * Removes a document from the corpus.
      * @param index The index of the document.
      */
-    public void remove(int index){
+    public void remove(final int index) {
+
         documents.remove(index);
     }
 
@@ -74,6 +82,7 @@ public class Corpus implements BagOfWords{
      */
     @Override
     public int getTotalTokens() {
+
         return this.totalTokens;
     }
 
@@ -83,10 +92,12 @@ public class Corpus implements BagOfWords{
      * @return      The frequency of the token withing the corpus.
      */
     @Override
-    public int getFrequency(String token) {
-        if (this.tokenFrequensies.containsKey(token)){
+    public int getFrequency(final String token) {
+
+        if (this.tokenFrequensies.containsKey(token)) {
             return this.tokenFrequensies.get(token);
         }
+
         return 0;
     }
 
@@ -96,7 +107,8 @@ public class Corpus implements BagOfWords{
      * @return      True if token is present in the Corpus.
      */
     @Override
-    public boolean containsToken(String token){
+    public boolean containsToken(final String token) {
+
         return tokenFrequensies.containsKey(token);
     }
 
@@ -106,14 +118,18 @@ public class Corpus implements BagOfWords{
      * @param end   End date, inclusive
      * @return      Corpus containing relevant documents
      */
-    public Corpus getTimePartition(Calendar start, Calendar end){
-        Corpus timePartition = new Corpus();
-        for (Document d : documents){
-            if (!d.getDate().before(start) && !d.getDate().after(end)){
+    public Corpus getTimePartition(final Calendar start, final Calendar end) {
+
+        final Corpus timePartition = new Corpus();
+
+        for (Document d : documents) {
+            if (!d.getDate().before(start) && !d.getDate().after(end)) {
                 timePartition.add(d);
             }
         }
+
         timePartition.refreshStats();
+
         return timePartition;
     }
 
@@ -121,12 +137,13 @@ public class Corpus implements BagOfWords{
      * Refreshes the stats of the corpus.
      */
     public void refreshStats() {
+
         totalTokens = 0;
         tokenFrequensies = new HashMap<>();
         numOfDocumentsContainingToken = new HashMap<>();
 
-        if (!documents.isEmpty()){
-            for (Document doc : documents){
+        if (!documents.isEmpty()) {
+            for (Document doc : documents) {
                 refreshDates(doc);
                 refreshFrequencies(doc);
                 refreshNumberOfDocumentsContainingToken(doc);
@@ -140,29 +157,36 @@ public class Corpus implements BagOfWords{
      * @param token Token
      * @return      Number of documents containing token
      */
-    public int numOfDocsContainingToken(String token){
-        if (containsToken(token)){
+    public int numOfDocsContainingToken(final String token) {
+
+        if (containsToken(token)) {
             return numOfDocumentsContainingToken.get(token);
         } else {
             return 0;
         }
     }
 
-    private void refreshNumberOfDocumentsContainingToken(Document doc) {
-        for(String token : doc.getUniqueTokens()){
+    private void refreshNumberOfDocumentsContainingToken(final Document doc) {
+
+        for (String token : doc.getUniqueTokens()) {
             int amountNow = 0;
-            if (numOfDocumentsContainingToken.containsKey(token)){
+
+            if (numOfDocumentsContainingToken.containsKey(token)) {
                 amountNow = numOfDocumentsContainingToken.get(token);
             }
-            numOfDocumentsContainingToken.put(token, amountNow+1);
+
+            numOfDocumentsContainingToken.put(token, amountNow + 1);
         }
     }
 
-    private void refreshFrequencies(Document doc) {
-        for (String token : doc.getUniqueTokens()){
-            int docTokenAmount = doc.getFrequency(token);
+    private void refreshFrequencies(final Document doc) {
+
+        for (String token : doc.getUniqueTokens()) {
+
+            final int docTokenAmount = doc.getFrequency(token);
 
             int amountNow = 0;
+
             if (tokenFrequensies.containsKey(token)) {
                 amountNow = tokenFrequensies.get(token);
             }
@@ -171,17 +195,19 @@ public class Corpus implements BagOfWords{
         }
     }
 
-    private void refreshDates(Document doc) {
-        if (doc.getDate() != null){
-            if (this.startDate == null){
+    private void refreshDates(final Document doc) {
+
+        if (doc.getDate() != null) {
+
+            if (this.startDate == null) {
                 this.startDate = (Calendar) documents.get(0).getDate().clone();
-            } else if (getStartDate().after(doc.getDate())){
+            } else if (getStartDate().after(doc.getDate())) {
                 startDate.setTime(doc.getDate().getTime());
             }
 
-            if (this.endDate == null){
+            if (this.endDate == null) {
                 this.endDate = (Calendar) documents.get(0).getDate().clone();
-            } else if (getEndDate().before(doc.getDate())){
+            } else if (getEndDate().before(doc.getDate())) {
                 endDate.setTime(doc.getDate().getTime());
             }
         }
@@ -191,6 +217,7 @@ public class Corpus implements BagOfWords{
      * @return the startDate
      */
     public Calendar getStartDate() {
+
         return startDate;
     }
 
@@ -198,13 +225,15 @@ public class Corpus implements BagOfWords{
      * @return the endDate
      */
     public Calendar getEndDate() {
+
         return endDate;
     }
 
     /**
      * @return A list of the documents that the corpus consists of.
      */
-    public ArrayList<Document> getDocuments() {
+    public List<Document> getDocuments() {
+
         return documents;
     }
 
@@ -212,10 +241,12 @@ public class Corpus implements BagOfWords{
      * @return A HashSet of unique tokens found in the corpus.
      */
     @Override
-    public HashSet<String> getUniqueTokens() {
-        HashSet<String> uniqueTokens = new HashSet<>();
-        for (Document d : documents){
-            for (String token : d.getUniqueTokens()){
+    public Set<String> getUniqueTokens() {
+
+        final Set<String> uniqueTokens = new HashSet<>();
+
+        for (Document d : documents) {
+            for (String token : d.getUniqueTokens()) {
                 uniqueTokens.add(token);
             }
         }

@@ -1,29 +1,30 @@
 package loez.nllr.preprocessor;
 
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
-/**
- *
- * @author loezi
- */
+import static org.junit.Assert.assertEquals;
+
 public class SimplePreprocessorTest {
+
     private SimplePreprocessor pp = new SimplePreprocessor();
 
     @Test
-    public void canCallSetLanguageWithoutException(){
+    public void canCallSetLanguageWithoutException() {
+
         pp.setLanguage("");
     }
-    
+
     @Test
-    public void getLanguage(){
+    public void getLanguage() {
+
         assertEquals("Simple preprocessor should return correct string when getLanguage is called",
                 "Simple preprocessor is language independent",
                 pp.getLanguage());
     }
-    
+
     @Test
-    public void correctlyProcesses(){
+    public void correctlyProcesses() {
+
         assertEquals("a string should be correctly processed",
                 "THIS IS A STRING",
                 pp.process("tHiS, is; a string...."));

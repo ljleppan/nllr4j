@@ -15,35 +15,36 @@ import loez.nllr.preprocessor.PreProcessor;
 public class DocumentConverter {
 
     /**
-     * Parse a csv-string to a document
+     * Parse a csv-string to a document.
      * @param rawDocumentString The raw string
      * @param dateParser        A string-to-date parser
      * @param preprocessor      A words-to-tokens processor
      * @return                  A document
      */
-    public static Document rawStringToDocument(String rawDocumentString, DateFormat dateParser, PreProcessor preprocessor) {
-        String[] parts = rawDocumentString.split(";");
-        
-        if (parts.length < 3){
+    public static Document rawStringToDocument(final String rawDocumentString, final DateFormat dateParser, final PreProcessor preprocessor) {
+
+        final String[] parts = rawDocumentString.split(";");
+
+        if (parts.length < 3) {
             return null;
         }
-        
+
         Calendar date = null;
         try {
-            Date dDate = dateParser.parse(parts[1]);
+            final Date dDate = dateParser.parse(parts[1]);
             date = new GregorianCalendar();
             date.setTime(dDate);
         } catch (ParseException ex) {
             return null;
         }
-        
-        StringBuilder body = new StringBuilder();
+
+        final StringBuilder body = new StringBuilder();
         for (int i = 2; i < parts.length; i++) {
             body.append(parts[i]);
         }
-        
-        String bodyProcessed = preprocessor.process(body.toString());
-        
+
+        final String bodyProcessed = preprocessor.process(body.toString());
+
         return new Document(date, bodyProcessed);
     }
 }

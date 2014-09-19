@@ -1,34 +1,36 @@
 package loez.nllr.algorithm;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import loez.nllr.algorithm.Argmax.Result;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-/**
- *
- * @author loezi
- */
 public class ArgmaxTest {
 
-    public class Same implements Algorithm{
+    public class Same implements Algorithm {
+
         @Override
-        public double calculate(Object[] args){
+        public double calculate(final Object[] args) {
+
             return ((double) args[0]) / 2;
         }
     }
 
     @Test
-    public void argmaxTest(){
-        ArrayList<Double> args = new ArrayList<>();
+    public void argmaxTest() {
+
+        final List<Double> args = new ArrayList<>();
         args.add(2.0);
         args.add(1.0);
         args.add(1.5);
 
-        Object[] constants = new Object[]{1};
+        final Object[] constants = new Object[]{1};
 
-        Result<Double> max = new Argmax().single(new Same(), args, constants);
+        final Result<Double> max = new Argmax().single(new Same(), args, constants);
 
         assertEquals("argmax result should have corret argument",
                 2.0, max.getArgument(), 0.001);
@@ -38,8 +40,9 @@ public class ArgmaxTest {
     }
 
     @Test
-    public void argmaxTestMultiple(){
-        ArrayList<Double> args = new ArrayList<>();
+    public void argmaxTestMultiple() {
+
+        final  List<Double> args = new ArrayList<>();
         args.add(2.0);
         args.add(1.0);
         args.add(1.5);
@@ -49,9 +52,9 @@ public class ArgmaxTest {
         args.add(0.0);
         args.add(-15.0);
 
-        Object[] constants = new Object[]{1};
+        final Object[] constants = new Object[]{1};
 
-        ArrayList<Result<Double>> results = new Argmax().multiple(new Same(), 5, args, constants);
+        final List<Result<Double>> results = new Argmax().multiple(new Same(), 5, args, constants);
 
         assertEquals("argmax multiple should return correct arguments in correct order",
                 100.0, results.get(0).getArgument(), 0.001);
@@ -75,5 +78,4 @@ public class ArgmaxTest {
         assertEquals("argmax multiple should return correct values in correct order",
                 0.75, results.get(4).getValue(), 0.001);
     }
-
 }

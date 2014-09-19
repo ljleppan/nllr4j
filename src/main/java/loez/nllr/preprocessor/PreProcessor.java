@@ -13,17 +13,17 @@ public interface PreProcessor {
      * @param input
      * @return
      */
-    public String process(String input);
-    
+    String process(String input);
+
     /**
-     * Sets the preprocessors language
+     * Sets the preprocessors language.
      * @param language  Language
      * @throws StemmerCreationException
      */
-    public void setLanguage(String language) throws StemmerCreationException;
-    
+    void setLanguage(String language) throws StemmerCreationException;
+
     /**
      * @return The language the preprocessor is set to.
      */
-    public String getLanguage();
+    String getLanguage();
 }

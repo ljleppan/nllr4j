@@ -1,10 +1,10 @@
 package loez.nllr.userinterface;
 
-import java.util.ArrayList;
+import java.util.List;
 import loez.nllr.preprocessor.PreProcessor;
 
 /**
- * A generic user interface
+ * A generic user interface.
  * @author ljleppan
  */
 public interface UserInterface {
@@ -12,7 +12,7 @@ public interface UserInterface {
     /**
      * Starts up the user interface.
      */
-    public void run();
+    void run();
 
     /**
      * Sets up possible preprocessors and their names.
@@ -20,5 +20,5 @@ public interface UserInterface {
      * @param preProcessors     ArrayList of preprocessors
      * @param preProcessorNames ArrayList of names of preprocessor
      */
-    public void setupPreprocessors(ArrayList<PreProcessor> preProcessors, ArrayList<String> preProcessorNames);
+    void setupPreprocessors(List<PreProcessor> preProcessors, List<String> preProcessorNames);
 }

@@ -7,17 +7,19 @@ package loez.nllr.preprocessor.exception;
 public class StemmerCreationException extends Exception {
 
     /**
-     * Creates a new StemmerCreationException with a message
+     * Creates a new StemmerCreationException with a message.
      * @param message   The message
      */
-    public StemmerCreationException(String message) {
+    public StemmerCreationException(final String message) {
+
         super(message);
     }
-    
+
     /**
      * Creates a new StemmerCreationException.
      */
-    public StemmerCreationException(){
+    public StemmerCreationException() {
+
         super();
     }
 }

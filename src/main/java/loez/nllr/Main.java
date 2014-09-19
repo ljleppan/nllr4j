@@ -1,6 +1,7 @@
 package loez.nllr;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import loez.nllr.preprocessor.PreProcessor;
 import loez.nllr.preprocessor.SimplePreprocessor;
@@ -11,10 +12,11 @@ import loez.nllr.userinterface.UserInterface;
 
 public class Main {
 
-    public static void main(String[] args) throws StemmerCreationException {
+    public static void main(final String[] args) throws StemmerCreationException {
+
         //Add preprocessors
-        ArrayList<String> ppNames = new ArrayList<>();
-        ArrayList<PreProcessor> pps = new ArrayList<>();
+        final List<String> ppNames = new ArrayList<>();
+        final List<PreProcessor> pps = new ArrayList<>();
 
         ppNames.add("");
         pps.add(new SimplePreprocessor());
@@ -25,12 +27,10 @@ public class Main {
         try {
             pps.add(new SnowballPreprocessor());
             ppNames.add("snowball");
-        } catch (StemmerCreationException e) {
+        } finally {
+            final UserInterface ui = new CommandLineInterface();
+            ui.setupPreprocessors(pps, ppNames);
+            ui.run();
         }
-
-        //Initialize UI
-        UserInterface ui = new CommandLineInterface();
-        ui.setupPreprocessors(pps, ppNames);
-        ui.run();
     }
 }

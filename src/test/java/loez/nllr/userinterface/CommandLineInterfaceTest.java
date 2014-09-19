@@ -5,30 +5,24 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+
 import loez.nllr.preprocessor.PreProcessor;
 import loez.nllr.preprocessor.SimplePreprocessor;
 import loez.nllr.preprocessor.SnowballPreprocessor;
 import loez.nllr.preprocessor.exception.StemmerCreationException;
+
 import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
-
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.contrib.java.lang.system.StandardOutputStreamLog;
 import org.junit.contrib.java.lang.system.TextFromStandardInputStream;
-
-import static org.junit.contrib.java.lang.system.TextFromStandardInputStream.emptyStandardInputStream;
-
 import org.junit.rules.TemporaryFolder;
 
-/**
- *
- * @author ljleppan
- */
+import static org.junit.Assert.*;
+import static org.junit.contrib.java.lang.system.TextFromStandardInputStream.emptyStandardInputStream;
+
 public class CommandLineInterfaceTest {
-    private UserInterface ui;
-    private File testFile;
 
     @Rule
     public final StandardOutputStreamLog log = new StandardOutputStreamLog();
@@ -39,13 +33,17 @@ public class CommandLineInterfaceTest {
     @Rule
     public TemporaryFolder testFolder = new TemporaryFolder();
 
+    private UserInterface ui;
+    private File testFile;
+
     @Before
-    public void setUp() throws IOException {
+    public void setUp() throws IOException, StemmerCreationException {
 
         testFile = testFolder.newFile("test.csv");
-        BufferedWriter out = new BufferedWriter(new FileWriter(testFile));
+
+        final BufferedWriter out = new BufferedWriter(new FileWriter(testFile));
         out.write("TEST; 8-APR-1987 00:38:26.78;    BELGRADE, April 8 - ;YUGOSLAV WORKERS MAY BE ANGERED BY LOST SUBSIDIES;  Yugoslav government plans to stop subsidising loss-making firms will anger hundreds of thousands of workers, Western diplomats said.     The law, proposed by Prime Minister Branko Mikulic, goes into effect on July 1 and aims to end a long-standing practice of supporting unprofitable companies. Under the law, wage cuts will be imposed on losing enterprises, while those failing to recover within a six-month grace period will face liquidation.     The diplomats said Mikulic's attempt to create a market economy is inevitable, but has still come as a shock to those accustomed to government subsidies.     \"It was a bitter pill which had to be swallowed, but if an overdose is taken too abruptly, it may have adverse effects on the system,\" a Western diplomat said.     He said if the law was applied too strictly it would probably provoke a new wave of strikes and unrest.     Yugoslavia was swept by strikes last month following the introduction of a wage-freeze law, later amended to allow more flexibility and some exemptions in what some political analysts saw as a retreat by Mikulic.     But with inflation moving towards 100 pct, trade union leaders have asked how much more deprivation workers can take.     The union leaders said workers thoughout the country are already receiving salaries below limits set under existing law, while others have received no wages at all this year because their employers are unable to pay them.     Workers also complain much of their income is taken in local, state and federal taxes.     Many others are losing their motivation to work and confidence in government as they feel their decision-making powers are being eroded, trade union officials said.     Meanwhile, the official Tanjug news agency reported a paper and cellulose factory at Ivangrad in the Montenegro republic closed yesterday and 2,000 of its workers were given \"temporary leave.\"     Tanjug said the plant had been running at a loss for the 24 years it had been in operation, and its closure was the result of \"economic necessity\" rather than bankruptcy.  REUTER \n");
-        out.write("TEST; 8-APR-1987 00:44:28.08;    PARIS, April 8 - ;FRENCH GOVERNMENT WINS CONFIDENCE VOTE;  The French government won, as expected, a vote of parliamentary confidence sought by Prime Minister Jacques Chirac on his general policies.     Votes from Chirac's Gaullist RPR party and its junior partner in the ruling coalition, the centre-right UDF, gave Chirac's cabinet a slim majority in the National Assembly.     A total of 294 deputies in the 577-member assembly voted to support Chirac, with 282 voting against. One member was absent.     The Socialists, Communists and the extreme-right National Front voted against the prime minister's call.  REUTER\n" );
+        out.write("TEST; 8-APR-1987 00:44:28.08;    PARIS, April 8 - ;FRENCH GOVERNMENT WINS CONFIDENCE VOTE;  The French government won, as expected, a vote of parliamentary confidence sought by Prime Minister Jacques Chirac on his general policies.     Votes from Chirac's Gaullist RPR party and its junior partner in the ruling coalition, the centre-right UDF, gave Chirac's cabinet a slim majority in the National Assembly.     A total of 294 deputies in the 577-member assembly voted to support Chirac, with 282 voting against. One member was absent.     The Socialists, Communists and the extreme-right National Front voted against the prime minister's call.  REUTER\n");
         out.write("TEST; 9-APR-1987 05:42:58.89;    BRUSSELS, April 9 - ;EC SUGAR TENDER SEEN MARKING NO CHANGE IN POLICY;  The maximum export rebate granted at yesterday's EC sugar tender marked no change in policy over producer complaints that they are not obtaining the EC intervention price in exporting sugar outside the Community, EC Commission sources said.     The maximum rebate was 46.496 Ecus per 100 kilos for 118,350 tonnes of sugar, down from 46.864 Ecus the previous week, but the change is explained by world market conditions.     Producers claim the rebate was short of the level needed to obtain a price equivalent to the intervention price by over one Ecu per 100 kilos, and was 0.87 Ecu short the previous week, the sources said.     They said this was despite the fact that the Commission had to accept 785,000 tonnes of sugar into intervention from operators protesting that rebates are too low.     Operators have now until early May to withdraw this sugar. But they have not given any sign of planned withdrawals unless the Commission reviews its export policy, they said.  REUTER\n");
         out.write("TEST; 10-APR-1987 17:56:18.18;    FREEHOLD, N.J., April 10 -      ;DELMED INC <DMD> YEAR LOSS;  Oper shr loss 30 cts vs loss 1.27 dlrs     Oper net loss 8,648,000 vs loss 25.6 mln     Revs 27.4 mln vs 33.3 mln     Avg shrs 29.1 mln vs 20.1 mln     Note: Oper excludes loss on provision for discontinued operations of 971,000 vs 12.2 mln and loss from conversion of debt 587,000 vs gain of 1,734,000.     1985 oper excludes loss from pension plan liquidation of 631,000 and loss from discontinued operations of 1,015,000.   Reuter\n");
         out.write("TEST; 10-APR-1987 17:56:55.34;    DETROIT, April 10 - ;MARCH TRUCK SALES SAID UP 16.4 PCT;  Retail sales of trucks in March rose 16.4 pct over the same month last year, said the Motor Vehicle Manufacturers Association.     The trade group said dealers sold 377,617 trucks in March, up from 324,327 last year.     Year-to-date truck sales were up 3.6 pct at 934,074 from 1986's 901,757.  Reuter \n");
@@ -57,8 +55,8 @@ public class CommandLineInterfaceTest {
         out.write("TEST; 13-APR-1987 03:14:22.80;    HONG KONG, April 13 - ;CHINESE HOTEL RAISES 21 MLN DLR LOAN;  A tourist hotel in Suzhou, Jiangsu province, is raising a 21 mln U.S. Dlr loan to cover its construction cost, lead manager <DnC Ltd> said.     The loan for the Suzhou Aster Hotel will mature in 10 years and is guaranteed by the provincial investment arm <Jiangsu International Trust and Investment Corp>. The terms were not revealed. The loan, to be signed by the end of the month, will be provided by a number of banks on a club basis.     The hotel is being developed on a contractual joint venture basis between an unnamed Hong Kong Chinese investor and Suzhou municipal entities.  REUTER \n");
         out.close();
 
-        ArrayList<String> ppNames = new ArrayList<>();
-        ArrayList<PreProcessor> pps = new ArrayList<>();
+        final List<String> ppNames = new ArrayList<>();
+        final List<PreProcessor> pps = new ArrayList<>();
 
         ppNames.add("");
         pps.add(new SimplePreprocessor());
@@ -69,29 +67,31 @@ public class CommandLineInterfaceTest {
         try {
             pps.add(new SnowballPreprocessor());
             ppNames.add("snowball");
-        } catch (StemmerCreationException e) { }
-
-        ui = new CommandLineInterface();
-        ui.setupPreprocessors(pps, ppNames);
+        } finally {
+            ui = new CommandLineInterface();
+            ui.setupPreprocessors(pps, ppNames);
+        }
     }
 
     @Test
-    public void giganticTestThatAlsoTestsCorpusReaderSomewhat(){
-        systemInMock.provideText(""
-                + "d-MMM-yyyy\n"
-                + "snowball\n"
-                + "English\n"
-                + testFile.getAbsolutePath()+"\n"
-                + "daily\n"
-                + "single\n"
-                + "YUGOSLAV WORKERS MAY BE ANGERED BY LOST SUBSIDIES  Yugoslav government plans to stop subsidising loss-making firms will anger hundreds of thousands of workers, Western diplomats said.     The law, proposed by Prime Minister Branko Mikulic, goes into effect on July 1 and aims to end a long-standing practice of supporting unprofitable companies. Under the law, wage cuts will be imposed on losing enterprises, while those failing to recover within a six-month grace period will face liquidation.     The diplomats said Mikulic's attempt to create a market economy is inevitable, but has still come as a shock to those accustomed to government subsidies.     \"It was a bitter pill which had to be swallowed, but if an overdose is taken too abruptly, it may have adverse effects on the system,\" a Western diplomat said.     He said if the law was applied too strictly it would probably provoke a new wave of strikes and unrest.     Yugoslavia was swept by strikes last month following the introduction of a wage-freeze law, later amended to allow more flexibility and some exemptions in what some political analysts saw as a retreat by Mikulic.     But with inflation moving towards 100 pct, trade union leaders have asked how much more deprivation workers can take.     The union leaders said workers thoughout the country are already receiving salaries below limits set under existing law, while others have received no wages at all this year because their employers are unable to pay them.     Workers also complain much of their income is taken in local, state and federal taxes.     Many others are losing their motivation to work and confidence in government as they feel their decision-making powers are being eroded, trade union officials said.     Meanwhile, the official Tanjug news agency reported a paper and cellulose factory at Ivangrad in the Montenegro republic closed yesterday and 2,000 of its workers were given \"temporary leave.\"     Tanjug said the plant had been running at a loss for the 24 years it had been in operation, and its closure was the result of \"economic necessity\" rather than bankruptcy.  REUTER \n"
-                + "help\n"
-                + "random\n"
-                + "quit\n");
+    public void giganticTestThatAlsoTestsCorpusReaderSomewhat() {
+
+        systemInMock.provideText("" +
+                "d-MMM-yyyy\n" +
+                "snowball\n" +
+                "English\n" +
+                testFile.getAbsolutePath() + "\n" +
+                "daily\n" +
+                "single\n" +
+                "YUGOSLAV WORKERS MAY BE ANGERED BY LOST SUBSIDIES  Yugoslav government plans to stop subsidising loss-making firms will anger hundreds of thousands of workers, Western diplomats said.     The law, proposed by Prime Minister Branko Mikulic, goes into effect on July 1 and aims to end a long-standing practice of supporting unprofitable companies. Under the law, wage cuts will be imposed on losing enterprises, while those failing to recover within a six-month grace period will face liquidation.     The diplomats said Mikulic's attempt to create a market economy is inevitable, but has still come as a shock to those accustomed to government subsidies.     \"It was a bitter pill which had to be swallowed, but if an overdose is taken too abruptly, it may have adverse effects on the system,\" a Western diplomat said.     He said if the law was applied too strictly it would probably provoke a new wave of strikes and unrest.     Yugoslavia was swept by strikes last month following the introduction of a wage-freeze law, later amended to allow more flexibility and some exemptions in what some political analysts saw as a retreat by Mikulic.     But with inflation moving towards 100 pct, trade union leaders have asked how much more deprivation workers can take.     The union leaders said workers thoughout the country are already receiving salaries below limits set under existing law, while others have received no wages at all this year because their employers are unable to pay them.     Workers also complain much of their income is taken in local, state and federal taxes.     Many others are losing their motivation to work and confidence in government as they feel their decision-making powers are being eroded, trade union officials said.     Meanwhile, the official Tanjug news agency reported a paper and cellulose factory at Ivangrad in the Montenegro republic closed yesterday and 2,000 of its workers were given \"temporary leave.\"     Tanjug said the plant had been running at a loss for the 24 years it had been in operation, and its closure was the result of \"economic necessity\" rather than bankruptcy.  REUTER \n" +
+                "help\n" +
+                "random\n" +
+                "quit\n");
 
         ui.run();
 
-        String out = log.getLog();
+        final String out = log.getLog();
+
         assertTrue(out.contains("Set date format:"));
         assertTrue(out.contains("Set preprocessor"));
         assertTrue(out.contains("simple"));
@@ -116,5 +116,4 @@ public class CommandLineInterfaceTest {
         assertTrue(out.contains("Random document"));
         assertTrue(out.contains("Actual date"));
     }
-
 }
