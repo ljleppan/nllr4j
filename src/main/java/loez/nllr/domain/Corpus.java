@@ -2,6 +2,7 @@ package loez.nllr.domain;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -50,6 +51,13 @@ public class Corpus implements BagOfWords {
 
         if (document != null) {
             documents.add(document);
+        }
+    }
+
+    public void addAll(final Collection<Document> documents) {
+
+        for (Document document : documents) {
+            add(document);
         }
     }
 

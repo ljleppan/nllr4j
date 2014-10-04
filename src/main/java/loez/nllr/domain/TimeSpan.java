@@ -36,7 +36,13 @@ public class TimeSpan {
         /**
          * A single year.
          */
-        YEARLY
+        YEARLY;
+
+        public static Length forString(final String length) {
+
+            return Length.valueOf(length.toUpperCase());
+        }
+
     };
 
     private Calendar startDate;
